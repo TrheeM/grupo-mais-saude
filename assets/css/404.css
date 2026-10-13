@@ -1,5 +1,0 @@
-body { background: var(--teal-deep); color: var(--white); }
-.lost { min-height: 100svh; display: grid; place-content: center; justify-items: center; gap: 22px; padding: 40px var(--gutter); text-align: center; }
-.lost img { border-radius: 22px; }
-.lost .lede { color: var(--white-2); margin-top: 0; }
-.lost-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }

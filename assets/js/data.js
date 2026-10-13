@@ -13,9 +13,6 @@ export const ADDRESS = {
     query: 'Rua Barão da Bocaina, 308, Centro, Lorena - SP',
 };
 
-// mensalidade do cartão (post "Convênios": R$ 39,99 por mês)
-export const MONTHLY = 39.99;
-
 export const GROUPS = [
     { id: 'todos', label: 'Todos' },
     { id: 'medicos', label: 'Consultas médicas' },

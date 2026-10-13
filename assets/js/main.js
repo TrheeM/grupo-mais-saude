@@ -25,6 +25,7 @@ if (!motionOK) root.classList.remove('motion');
 /* ---------- WhatsApp com mensagem pronta ---------- */
 const MSG = {
     cartao: 'Olá! Quero fazer o cartão Mais Saúde. Como funciona?',
+    valor: 'Olá! Quero saber o valor do cartão Mais Saúde e como fazer o meu.',
     geral: 'Olá! Vim pelo site do Grupo Mais Saúde.',
     parceiro: 'Olá! Tenho comércio/consultório em Lorena e quero ser parceiro conveniado do Grupo Mais Saúde.',
 };
@@ -36,18 +37,22 @@ $$('[data-wa]').forEach(a => { a.href = waLink(MSG[a.dataset.wa] || MSG.geral); 
    ========================================================= */
 $('#conv-count').textContent = CONVENIOS.length;
 
-const TAG = { medicos: 'Consulta', exames: 'Exame', terapias: 'Terapia' };
-$('#conv-grid').innerHTML = CONVENIOS.map(c => `
-    <li class="conv" data-group="${c.group}">
-        <div class="conv-top"><span class="conv-ic">${icon(c.icon)}</span><span class="conv-group">${c.id === 'odontologia' ? 'Odonto' : TAG[c.group]}</span></div>
-        <h3>${esc(c.name)}</h3>
-        <p>${esc(c.line)}</p>
-        <a class="conv-ask" href="${waLink(convMsg(c))}" ${EXT} aria-label="Marcar ${esc(c.name)} pelo WhatsApp">${icon('wa')}Marcar</a>
-    </li>`).join('');
-
-$('#toggles').innerHTML = GROUPS.map((g, i) => {
-    const n = g.id === 'todos' ? CONVENIOS.length : CONVENIOS.filter(c => c.group === g.id).length;
-    return `<button class="toggle" type="button" data-group="${g.id}" aria-pressed="${i === 0}">${esc(g.label)}<small>${n}</small></button>`;
+const GROUP_ICON = { medicos: 'stetho', exames: 'tube', terapias: 'hand' };
+$('#conv-acc').innerHTML = GROUPS.filter(g => g.id !== 'todos').map((g, i) => {
+    const list = CONVENIOS.filter(c => c.group === g.id);
+    return `<details class="acc" name="convenios"${i === 0 ? ' open' : ''}>
+        <summary>
+            <span class="acc-ic">${icon(GROUP_ICON[g.id])}</span>
+            <span class="acc-title">${esc(g.label)}</span>
+            <span class="acc-count">${list.length}</span>
+            <svg class="icon acc-chev" aria-hidden="true"><use href="#i-plus"/></svg>
+        </summary>
+        <div class="acc-body"><ul class="specs">${list.map(c => `
+            <li><a class="spec" href="${waLink(convMsg(c))}" ${EXT} aria-label="Marcar ${esc(c.name)} pelo WhatsApp">
+                <span class="spec-ic">${icon(c.icon)}</span><span class="spec-name">${esc(c.name)}</span>${icon('wa')}
+            </a></li>`).join('')}
+        </ul></div>
+    </details>`;
 }).join('');
 
 $('#b-track').innerHTML = BENEFITS.map(b => `
@@ -126,7 +131,7 @@ function swapWord(i) {
     });
 }
 
-function selectHero(i, { user = false } = {}) {
+function selectHero(i, { user = false, dir: forceDir = 0 } = {}) {
     i = (i + HERO.length) % HERO.length;
     if (i === heroIndex || spinning) return false;
     const from = heroIndex;
@@ -148,7 +153,7 @@ function selectHero(i, { user = false } = {}) {
     swapWord(i);
     if (hero3d) hero3d.switchTo(h);
     // giro de vitrine no eixo Y (mesma coreografia da garrafa do Milão): 0→360 com desfoque, troca, 360→720 assentando
-    const dir = user && i === (from - 1 + HERO.length) % HERO.length ? -1 : 1;
+    const dir = forceDir || (user && i === (from - 1 + HERO.length) % HERO.length ? -1 : 1);
     spinning = true;
     gsap.to(cardEl, {
         rotationY: 360 * dir, scale: 0.9, '--blur': '12px', duration: 0.6, ease: 'power2.in',
@@ -163,51 +168,97 @@ function selectHero(i, { user = false } = {}) {
     return true;
 }
 
-/* autoplay: troca a cada 6 s, com barra de tempo; pausa ao passar o mouse, ao focar, fora da tela e no botão */
+/* autoplay: troca a cada 6 s com barra de tempo; pausa com mouse/foco/fora da tela
+   e para de vez quando a pessoa assume (clique, setas ou arrastar o cartão) */
 const DWELL = 6;
-const playBtn = $('#hero-play');
-let paused = !motionOK;
+let auto = motionOK;
 let hold = false;
 let heroVisible = true;
 let timer = null;
 
 function syncTimer() {
     if (!timer) return;
-    if (paused || hold || !heroVisible || document.hidden) timer.pause();
+    if (hold || !heroVisible || document.hidden) timer.pause();
     else timer.play();
 }
 function startTimer() {
     if (timer) timer.kill();
     timer = null;
     picks.forEach(p => p.style.setProperty('--p', '0'));
-    if (paused || !hasGsap) return;
+    if (!auto || !hasGsap) return;
     timer = gsap.fromTo(picks[heroIndex], { '--p': 0 }, {
         '--p': 1, duration: DWELL, ease: 'none',
         onComplete() { selectHero(heroIndex + 1); startTimer(); },
     });
     syncTimer();
 }
-function setPaused(v) {
-    paused = v;
-    playBtn.setAttribute('aria-pressed', String(v));
-    playBtn.setAttribute('aria-label', v ? 'Retomar a troca automática' : 'Pausar a troca automática');
-    if (v) { if (timer) timer.kill(); timer = null; picks.forEach(p => p.style.setProperty('--p', '0')); }
-    else startTimer();
+function userGo(i, opts = {}) {
+    auto = false;
+    startTimer();
+    return selectHero(i, { user: true, ...opts });
 }
-setPaused(paused);
-playBtn.addEventListener('click', () => setPaused(!paused));
 
 picker.addEventListener('click', e => {
     const b = e.target.closest('.pick');
-    if (b && selectHero(+b.dataset.index, { user: true }) && !paused) startTimer();
+    if (b) userGo(+b.dataset.index);
 });
-$('#hero-prev').addEventListener('click', () => { if (selectHero(heroIndex - 1, { user: true }) && !paused) startTimer(); });
-$('#hero-next').addEventListener('click', () => { if (selectHero(heroIndex + 1, { user: true }) && !paused) startTimer(); });
+$('#hero-prev').addEventListener('click', () => userGo(heroIndex - 1, { dir: -1 }));
+$('#hero-next').addEventListener('click', () => userGo(heroIndex + 1, { dir: 1 }));
 const heroRight = $('.hero-right');
 heroRight.addEventListener('pointerenter', () => { hold = true; syncTimer(); });
 heroRight.addEventListener('pointerleave', () => { hold = false; syncTimer(); });
 heroRight.addEventListener('focusin', () => { hold = true; syncTimer(); });
 heroRight.addEventListener('focusout', e => { if (!heroRight.contains(e.relatedTarget)) { hold = false; syncTimer(); } });
+
+/* arrastar o cartão para o lado: esquerda = próximo, direita = anterior.
+   Enquanto arrasta, o cartão gira junto; se soltar antes do limite, volta com mola. */
+(() => {
+    const stage = $('.hero-stage');
+    const hint = $('.drag-hint');
+    let x0 = 0, y0 = 0, dx = 0, dragging = false, decided = false, id = null;
+    const LIMIT = 60;
+    stage.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true; decided = false; dx = 0; id = e.pointerId;
+        x0 = e.clientX; y0 = e.clientY;
+    });
+    stage.addEventListener('pointermove', e => {
+        if (!dragging || e.pointerId !== id) return;
+        dx = e.clientX - x0;
+        const dy = e.clientY - y0;
+        if (!decided) {
+            if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+            decided = true;
+            if (Math.abs(dy) > Math.abs(dx)) { dragging = false; return; } // rolagem vertical
+            stage.setPointerCapture(id);
+            stage.classList.add('dragging');
+            auto = false; startTimer(); // pegou o cartão para o lado: a troca automática para
+        }
+        if (hasGsap && !spinning) gsap.set(cardEl, { rotationY: Math.max(-70, Math.min(70, -dx * 0.35)), x: dx * 0.25 });
+    });
+    const end = () => {
+        if (!dragging) return;
+        dragging = false;
+        stage.classList.remove('dragging');
+        if (hint) hint.classList.add('used');
+        if (decided && Math.abs(dx) > LIMIT) {
+            const step = dx < 0 ? 1 : -1;
+            // se pegou no meio de um giro, troca assim que ele terminar
+            const go = () => (spinning ? gsap.delayedCall(0.1, go) : userGo(heroIndex + step, { dir: step }));
+            if (hasGsap) { gsap.to(cardEl, { x: 0, duration: 0.6, ease: 'expo.out' }); go(); }
+            else userGo(heroIndex + step, { dir: step });
+        } else if (hasGsap && !spinning) {
+            gsap.to(cardEl, { rotationY: 0, x: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' });
+        }
+    };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+    // teclado: setas esquerda/direita com o foco no seletor
+    heroRight.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); userGo(heroIndex + 1, { dir: 1 }); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); userGo(heroIndex - 1, { dir: -1 }); }
+    });
+})();
 
 /* laço do topo: cartão inclina com o cursor e flutua; cubos 3D */
 (() => {
@@ -304,53 +355,21 @@ heroRight.addEventListener('focusout', e => { if (!heroRight.contains(e.relatedT
     ['inicio', 'convenios', 'beneficios', 'cartao', 'como-funciona', 'lojas', 'duvidas', 'contato'].forEach(id => navIO.observe(document.getElementById(id)));
 })();
 
-/* =========================================================
-   Convênios: filtro com Flip e luz que segue o cursor
-   ========================================================= */
-(() => {
-    const grid = $('#conv-grid');
-    const cards = $$('.conv', grid);
-    const toggles = $$('.toggle');
-    const Flip = motionOK && window.Flip;
-    if (Flip) gsap.registerPlugin(Flip);
-    $('#toggles').addEventListener('click', e => {
-        const t = e.target.closest('.toggle');
-        if (!t || t.getAttribute('aria-pressed') === 'true') return;
-        toggles.forEach(b => b.setAttribute('aria-pressed', String(b === t)));
-        const g = t.dataset.group;
-        const state = Flip ? Flip.getState(cards) : null;
-        cards.forEach(c => { c.hidden = g !== 'todos' && c.dataset.group !== g; });
-        if (!state) return;
-        Flip.from(state, {
-            duration: 0.75, ease: 'expo.inOut', absolute: true, nested: true,
-            onEnter: els => gsap.fromTo(els, { opacity: 0, scale: 0.85, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.7, delay: 0.15, stagger: 0.04, ease: 'expo.out' }),
-            onLeave: els => gsap.to(els, { opacity: 0, scale: 0.85, duration: 0.35, ease: 'power2.in' }),
-        });
-    });
-    if (canHover) {
-        grid.addEventListener('pointermove', e => {
-            const c = e.target.closest('.conv');
-            if (!c) return;
-            const r = c.getBoundingClientRect();
-            c.style.setProperty('--mx', `${e.clientX - r.left}px`);
-            c.style.setProperty('--my', `${e.clientY - r.top}px`);
-        });
-    }
-})();
-
-/* ---------- dúvidas: abrir e fechar com altura animada ---------- */
-$$('.faq details').forEach(d => {
+/* ---------- acordeões (convênios e dúvidas): altura animada; nos convênios só um aberto ---------- */
+function closeDetails(d, a) {
+    gsap.to(a, { height: 0, duration: 0.45, ease: 'power3.inOut', onComplete() { d.open = false; gsap.set(a, { clearProps: 'height' }); } });
+}
+$$('.faq details, .acc').forEach(d => {
     const s = $('summary', d);
-    const a = $('.faq-a', d);
+    const a = $('.faq-a, .acc-body', d);
     s.addEventListener('click', e => {
         if (!motionOK) return;
         e.preventDefault();
-        if (d.open) {
-            gsap.to(a, { height: 0, duration: 0.45, ease: 'power3.inOut', onComplete() { d.open = false; gsap.set(a, { clearProps: 'height' }); } });
-        } else {
-            d.open = true;
-            gsap.fromTo(a, { height: 0 }, { height: 'auto', duration: 0.6, ease: 'expo.out', clearProps: 'height' });
-        }
+        if (d.open) { closeDetails(d, a); return; }
+        if (d.matches('.acc')) $$('.acc[open]').forEach(o => { if (o !== d) closeDetails(o, $('.acc-body', o)); });
+        d.open = true;
+        gsap.fromTo(a, { height: 0 }, { height: 'auto', duration: 0.6, ease: 'expo.out', clearProps: 'height' });
+        if (d.matches('.acc')) gsap.from($$('.spec', d), { y: 16, opacity: 0, duration: 0.6, stagger: 0.035, ease: 'expo.out', clearProps: 'transform,opacity' });
     });
 });
 
@@ -416,11 +435,12 @@ function playIntro() {
       .fromTo('.hw-top', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2 }, T + 0.25)
       .set('.hw-main', { opacity: 1 }, T + 0.3)
       .from($$('.ch', wordEl), { yPercent: 90, opacity: 0, filter: 'blur(10px)', duration: 1.2, stagger: 0.04, clearProps: 'filter' }, T + 0.3)
-      .fromTo(['.hero-lede', '.hero-actions', '.hero-price'], { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.1, clearProps: 'transform' }, T + 0.45)
+      .fromTo(['.hero-lede', '.hero-actions'], { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.1, clearProps: 'transform' }, T + 0.45)
       .fromTo('.picker-label', { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 1 }, T + 0.5)
       .set('#picker', { opacity: 1 }, T + 0.55)
       .from(picks, { x: 50, opacity: 0, duration: 1, stagger: 0.07, clearProps: 'transform,opacity' }, T + 0.55)
       .fromTo('.picker-nav', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, clearProps: 'transform' }, T + 0.9)
+      .fromTo('.drag-hint', { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, T + 1.1)
       .fromTo('.scroll-cue', { opacity: 0 }, { opacity: 1, duration: 1 }, T + 1.2);
 }
 
@@ -476,13 +496,8 @@ if (ST) {
     });
 
     // convênios
-    gsap.set('.toggle', { y: 20, opacity: 0 });
-    ST.create({ trigger: '#toggles', start: 'top 90%', once: true, onEnter: () => gsap.to('.toggle', { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: 'expo.out', clearProps: 'transform' }) });
-    gsap.set('.conv', { y: 70, opacity: 0, rotationX: -12, transformPerspective: 900, transformOrigin: '50% 0%' });
-    ST.batch('.conv', {
-        start: 'top 92%', once: true,
-        onEnter: b => gsap.to(b, { y: 0, opacity: 1, rotationX: 0, duration: 1.1, stagger: 0.07, ease: 'expo.out', clearProps: 'transform' }),
-    });
+    gsap.set('.acc', { y: 40, opacity: 0 });
+    ST.batch('.acc', { start: 'top 92%', once: true, onEnter: b => gsap.to(b, { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out', clearProps: 'transform' }) });
 
     // benefícios: no desktop a seção fixa e os cartões correm na horizontal
     const mm = gsap.matchMedia();
@@ -527,14 +542,6 @@ if (ST) {
         scrollTrigger: { trigger: '#cartao', start: 'top 90%', end: 'center 60%', scrub: 1 },
     });
     gsap.fromTo('.plan-orbit', { rotation: -60, scale: 0.85 }, { rotation: 120, scale: 1, ease: 'none', scrollTrigger: { trigger: '#cartao', start: 'top bottom', end: 'bottom top', scrub: true } });
-    const priceEl = $('#price-int');
-    ST.create({
-        trigger: '.plan-price', start: 'top 85%', once: true,
-        onEnter() {
-            const o = { v: 0 };
-            gsap.to(o, { v: 39, duration: 1.6, ease: 'power3.out', onUpdate() { priceEl.textContent = Math.round(o.v); } });
-        },
-    });
     gsap.set('.plan-list li', { x: -24, opacity: 0 });
     ST.batch('.plan-list li', { start: 'top 92%', once: true, onEnter: b => gsap.to(b, { x: 0, opacity: 1, duration: 0.9, stagger: 0.07, ease: 'expo.out' }) });
     gsap.from('.plan-actions, #cartao .fine', { y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: 'expo.out', scrollTrigger: { trigger: '.plan-actions', start: 'top 92%', once: true } });

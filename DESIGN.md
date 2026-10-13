@@ -22,19 +22,20 @@ O cartão como objeto central. O topo é escuro como os posts "Convênio" do Ins
 ## Componentes
 
 - **Cartão** (CSS 3D, frente e verso): grafite, chip dourado, logo, "Convênio" + especialidade + ícone em marca d'água; reflexo que corre com a inclinação.
-- **Seletor de convênios**: lista numerada 01–06 com ícone; ativo = fundo claro + ícone amarelo + barra de tempo.
-- **Cartão de convênio**: papel, ícone em quadrado teal, nome em display, "Marcar" com ícone do WhatsApp. No celular vira linha compacta.
+- **Seletor de convênios**: lista numerada 01–06 com ícone; ativo = fundo claro + ícone amarelo + barra de tempo. Setas anterior/próximo; sem botão de pausa.
+- **Arrastar o cartão**: puxar para a esquerda = próximo, para a direita = anterior. O cartão gira junto com o dedo; abaixo de 60px volta com mola. Dica "Arraste o cartão" some depois do primeiro uso.
+- **Convênios em acordeão**: título à esquerda (fixo ao rolar), três áreas à direita (Consultas médicas, Exames, Terapias e odonto); uma aberta por vez. Cada especialidade é uma linha compacta (ícone + nome) que já é o link do WhatsApp. No celular, 2 colunas.
 - **Benefícios**: cartões de vidro sobre teal, número vazado, barra de cor no pé.
 - **Lojas**: linhas com nome gigante; hover enche de teal de baixo para cima.
-- Raios: 10/16/24px; pílula só em botões e filtros.
+- Raios: 10/16/24px; pílula só em botões.
 
 ## Movimento
 
 - Entrada (GSAP timeline, expo.out): coração do logo se desenha, a cruz monta, cortina sobe; título sobe palavra por palavra de dentro da máscara; cartão gira de -200° no eixo Y com desfoque; cubos 3D explodem de dentro do cartão; palavra gigante entra letra a letra.
-- Troca de convênio (a coreografia da garrafa do Milão): fundo e brilho mudam em 1.5s; cartão gira 0→360 (power2.in, 12px de desfoque), troca o conteúdo, 360→720 (back.out 0.7); palavra gigante sai e entra letra a letra; cubos implodem no cartão e explodem girando, luz de contorno troca de cor. Autoplay de 6s com barra, pausável.
+- Troca de convênio (a coreografia da garrafa do Milão): fundo e brilho mudam em 1.5s; cartão gira 0→360 (power2.in, 12px de desfoque), troca o conteúdo, 360→720 (back.out 0.7); palavra gigante sai e entra letra a letra; cubos implodem no cartão e explodem girando, luz de contorno troca de cor. Autoplay de 6s com barra; pausa com mouse/foco e para quando a pessoa assume (arrastar, setas, clique).
 - Cursor: cartão inclina (30°/18°) e flutua; cubos fogem do cursor; botões magnéticos.
-- Rolagem (ScrollTrigger): títulos sobem linha a linha; convênios caem em cascata com leve rotação X; benefícios fixam e correm na horizontal com medidor; cartão do plano gira até ficar de frente (scrub); preço conta de 0 a 39; linha dos passos se desenha; nomes das lojas sobem; mapa se desenrola; faixa amarela acelera com a velocidade da rolagem.
-- Filtro de convênios: GSAP Flip.
+- Rolagem (ScrollTrigger): títulos sobem linha a linha; áreas de convênios sobem em cascata; benefícios fixam e correm na horizontal com medidor; cartão do plano gira até ficar de frente (scrub); linha dos passos se desenha; nomes das lojas sobem; mapa se desenrola; faixa amarela acelera com a velocidade da rolagem.
+- Acordeão: altura animada (expo.out), especialidades entram em cascata.
 - `prefers-reduced-motion`: sem entrada, sem autoplay, sem flutuação, cubos estáticos, trocas instantâneas.
 
 ## Origem dos recursos

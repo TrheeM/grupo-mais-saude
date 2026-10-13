@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Grupo Mais Saúde | Cartão de descontos em saúde em Lorena</title>
-<meta name="description" content="Cartão Mais Saúde: consultas a preço popular em 16 especialidades, desconto em exames, vacinas e comércio, assistência funeral e remoção de pacientes. R$ 39,99 por mês. Lorena/SP.">
-<link rel="canonical" href="https://trheem.github.io/grupo-mais-saude/">
+<meta name="description" content="Cartão Mais Saúde: consultas a preço popular em 16 especialidades, desconto em exames, vacinas e comércio, assistência funeral e remoção de pacientes. Lorena/SP.">
+<link rel="canonical" href="https://grupomaissaude.mdrify.com/">
 <meta name="theme-color" content="#0b3a39">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://trheem.github.io/grupo-mais-saude/">
+<meta property="og:url" content="https://grupomaissaude.mdrify.com/">
 <meta property="og:title" content="Grupo Mais Saúde | Cartão de descontos em saúde">
-<meta property="og:description" content="Consultas a preço popular, exames com desconto, assistência funeral e remoção de pacientes. R$ 39,99 por mês, em Lorena/SP.">
-<meta property="og:image" content="https://trheem.github.io/grupo-mais-saude/assets/img/og.png">
+<meta property="og:description" content="Consultas a preço popular, exames com desconto, assistência funeral e remoção de pacientes, em Lorena/SP.">
+<meta property="og:image" content="https://grupomaissaude.mdrify.com/assets/img/og.png">
 <meta property="og:locale" content="pt_BR">
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
 <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
@@ -28,7 +28,7 @@
   "@type": "MedicalOrganization",
   "name": "Grupo Mais Saúde",
   "description": "Rede credenciada de descontos em saúde: consultas, exames, vacinas, comércio conveniado, assistência funeral e remoção de pacientes.",
-  "url": "https://trheem.github.io/grupo-mais-saude/",
+  "url": "https://grupomaissaude.mdrify.com/",
   "telephone": "+55 12 3199-4242",
   "address": { "@type": "PostalAddress", "streetAddress": "Rua Barão da Bocaina, 308", "addressLocality": "Lorena", "addressRegion": "SP", "addressCountry": "BR" },
   "areaServed": "Lorena",
@@ -39,7 +39,6 @@
 <script src="assets/vendor/gsap.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/vendor/SplitText.min.js" defer></script>
-<script src="assets/vendor/Flip.min.js" defer></script>
 <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
@@ -56,8 +55,6 @@
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></symbol>
     <!-- especialidades -->
     <symbol id="i-stetho" viewBox="0 0 24 24"><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1M5 2v2M11 2v2M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></symbol>
@@ -130,7 +127,6 @@
                     <a class="btn btn-solid btn-lg magnetic" data-wa="cartao" href="https://wa.me/551231994242" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>Fazer meu cartão</a>
                     <a class="btn btn-glass btn-lg" href="#convenios">Ver convênios <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
                 </div>
-                <p class="hero-price intro"><span class="hp-label">Mensalidade</span><span class="hp-value">R$ <b>39</b>,99</span><span class="hp-label">por mês</span></p>
             </div>
 
             <div class="hero-stage">
@@ -161,6 +157,7 @@
                     </div>
                 </div>
                 <div class="card-floor" aria-hidden="true"></div>
+                <p class="drag-hint intro" aria-hidden="true"><svg class="icon"><use href="#i-left"/></svg>Arraste o cartão<svg class="icon"><use href="#i-right"/></svg></p>
             </div>
 
             <div class="hero-right">
@@ -169,7 +166,6 @@
                 <div class="picker-nav intro">
                     <button class="nav-arrow" type="button" id="hero-prev" aria-label="Convênio anterior"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
                     <button class="nav-arrow" type="button" id="hero-next" aria-label="Próximo convênio"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
-                    <button class="nav-arrow" type="button" id="hero-play" aria-pressed="false" aria-label="Pausar a troca automática"><svg class="icon i-pause" aria-hidden="true"><use href="#i-pause"/></svg><svg class="icon i-play" aria-hidden="true"><use href="#i-play"/></svg></button>
                     <a class="btn btn-light" id="hero-ask" href="https://wa.me/551231994242" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg><span>Marcar consulta</span></a>
                 </div>
                 <p class="sr-only" aria-live="polite" id="hero-live"></p>
@@ -193,14 +189,13 @@
     </div>
 
     <section class="section paper" id="convenios" aria-labelledby="convenios-title">
-        <div class="wrap">
+        <div class="wrap conv-wrap">
             <div class="section-head">
                 <p class="kicker">Convênios</p>
-                <h2 class="h2 split" id="convenios-title"><span id="conv-count">16</span> especialidades num cartão só.</h2>
-                <p class="lede">Escolha a especialidade e toque em <strong>Marcar</strong>. A mensagem vai pronta para o nosso WhatsApp com o nome dela.</p>
+                <h2 class="h2 h2-sm split" id="convenios-title"><span id="conv-count">16</span> especialidades num cartão só.</h2>
+                <p class="lede">Abra a área e toque na especialidade: a mensagem vai pronta para o nosso WhatsApp.</p>
             </div>
-            <div class="toggles" role="group" aria-label="Filtrar convênios" id="toggles"></div>
-            <ul class="conv-grid" id="conv-grid"></ul>
+            <div class="acc-list" id="conv-acc"></div>
             <noscript><p class="noscript">Cardiologia, Pediatria, Ortopedia, Andrologia, Urologia, Clínica Geral, Geriatria, Psicologia adulta e infantil, Ginecologia, Obstetrícia, Exames Laboratoriais, Diagnóstico por Imagem, Acupuntura, Fisioterapia, Massoterapia e Odontologia. Marque pelo WhatsApp (12) 3199-4242.</p></noscript>
         </div>
     </section>
@@ -247,20 +242,17 @@
             <div class="plan-copy">
                 <p class="kicker">O cartão</p>
                 <h2 class="h2 split" id="cartao-title">Um cartão para a família toda usar.</h2>
-                <p class="plan-price"><span class="cur">R$</span><b id="price-int">39</b><span class="cents">,99</span><span class="per">por mês</span></p>
                 <ul class="plan-list">
                     <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Consultas com desconto em 16 especialidades</li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Exames de laboratório e de imagem com preço de conveniado</li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Vacinas na MedCenter Lorena em até 10x no crédito</li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Exames e vacinas com preço de conveniado</li>
                     <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Assistência funeral para a família</li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Remoção de pacientes: SBV e UTI móvel</li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Desconto em farmácia e lojas conveniadas</li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Desconto em farmácia e lojas</li>
                 </ul>
                 <div class="plan-actions">
-                    <a class="btn btn-solid btn-lg magnetic" data-wa="cartao" href="https://wa.me/551231994242" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>Fazer meu cartão</a>
+                    <a class="btn btn-solid btn-lg magnetic" data-wa="valor" href="https://wa.me/551231994242" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-wa"/></svg>Saber o valor</a>
                     <a class="btn btn-ghost btn-lg" href="tel:+551231994242"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>(12) 3199-4242</a>
                 </div>
-                <p class="fine">O Mais Saúde é um cartão de descontos. Não é plano de saúde. Condições e dependentes: confirme pelo WhatsApp.</p>
+                <p class="fine">Valor e condições pelo WhatsApp. Cartão de descontos, não é plano de saúde.</p>
             </div>
         </div>
     </section>
@@ -282,7 +274,7 @@
                     <li class="step">
                         <span class="step-n">2</span>
                         <h3>Faça seu cartão</h3>
-                        <p>Cadastro feito com a nossa equipe. A mensalidade é R$ 39,99.</p>
+                        <p>A nossa equipe faz o cadastro e passa o valor.</p>
                     </li>
                     <li class="step">
                         <span class="step-n">3</span>
@@ -319,23 +311,19 @@
             <div class="faq">
                 <details>
                     <summary>O Mais Saúde é plano de saúde?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-                    <div class="faq-a"><p>Não. É um cartão de descontos: com ele você paga menos nos médicos, laboratórios, clínicas e lojas conveniados.</p></div>
+                    <div class="faq-a"><p>Não. É um cartão de descontos nos médicos, laboratórios e lojas conveniados.</p></div>
                 </details>
                 <details>
                     <summary>Quanto custa?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-                    <div class="faq-a"><p>R$ 39,99 por mês.</p></div>
-                </details>
-                <details>
-                    <summary>Quem da família pode usar?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-                    <div class="faq-a"><p>A assistência funeral é benefício para toda a família. Para saber quem entra como dependente no cartão, chame no WhatsApp (12) 3199-4242.</p></div>
+                    <div class="faq-a"><p>Chame no <a data-wa="valor" href="https://wa.me/551231994242" target="_blank" rel="noopener noreferrer">WhatsApp (12) 3199-4242</a> que a gente passa o valor.</p></div>
                 </details>
                 <details>
                     <summary>Como marco uma consulta?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-                    <div class="faq-a"><p>Pelo WhatsApp (12) 3199-4242 ou pelo botão <strong>Marcar</strong> de cada especialidade aqui no site.</p></div>
+                    <div class="faq-a"><p>Pelo WhatsApp (12) 3199-4242 ou tocando na especialidade aqui no site.</p></div>
                 </details>
                 <details>
                     <summary>A remoção de pacientes atende emergência?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-                    <div class="faq-a"><p>A remoção é para transporte de pacientes, como acamados, com suporte básico (SBV) ou UTI móvel. Em emergência, ligue 192 (SAMU).</p></div>
+                    <div class="faq-a"><p>Não. É transporte de pacientes, como acamados. Em emergência, ligue 192.</p></div>
                 </details>
             </div>
         </div>
@@ -370,7 +358,7 @@
                 <text class="lg-ais" x="196" y="128">ais</text><text class="lg-saude" x="216" y="212">saúde</text><text class="lg-grupo" x="22" y="228">GRUPO</text>
             </svg>
         </a>
-        <p class="legal"><strong>Cartão de descontos. Não é plano de saúde</strong> e não substitui atendimento de urgência: em emergência, ligue 192 (SAMU). Descontos e condições variam conforme o conveniado; confirme pelo WhatsApp.</p>
+        <p class="legal">Cartão de descontos, não é plano de saúde. Em emergência, ligue 192.</p>
         <p class="copy">© 2026 Grupo Mais Saúde · Rua Barão da Bocaina, 308 · Centro · Lorena/SP</p>
     </div>
 </footer>
