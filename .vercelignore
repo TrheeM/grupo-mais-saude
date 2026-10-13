@@ -1,0 +1,6 @@
+.playwright-mcp
+.impeccable
+.DS_Store
+*.log
+.env*
+.vercel
